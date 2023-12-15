@@ -1,14 +1,7 @@
 import { Link } from "react-router-dom";
 
 import classes from "./ClothesItem.module.css";
-
-const colorToHex = {
-  black: "000000",
-  white: "FFFFFF",
-  red: "FA5252",
-  yellow: "FAB005",
-  blue: "228BE6",
-};
+import colorToHex from "../util/colorToHex";
 
 const ClothesItem = (props) => {
   const hex = colorToHex[props.color];

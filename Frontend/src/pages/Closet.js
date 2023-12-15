@@ -1,62 +1,69 @@
+import { Suspense, useState, useEffect } from "react";
+import { Await, defer } from "react-router-dom";
 import AddClothesItem from "../components/AddClothesItem";
 import ClothesList from "../components/ClothesList";
 import PageContent from "../components/PageContent";
+import { getAuthToken, getGraphqlEndpoint } from "../util/auth";
 
-const DUMMY_CLOTHES_DATA = [
-  {
-    clothes_id: 1,
-    color: "red",
-    is_upper: true,
-    season: "winter",
-    state: undefined,
-  },
-  {
-    clothes_id: 2,
-    color: "yellow",
-    is_upper: false,
-    season: "summer",
-    state: undefined,
-  },
-  {
-    clothes_id: 3,
-    color: "blue",
-    is_upper: true,
-    season: "spring",
-    state: undefined,
-  },
-  {
-    clothes_id: 4,
-    color: "red",
-    is_upper: true,
-    season: "winter",
-    state: undefined,
-  },
-  {
-    clothes_id: 5,
-    color: "yellow",
-    is_upper: false,
-    season: "summer",
-    state: undefined,
-  },
-  {
-    clothes_id: 6,
-    color: "blue",
-    is_upper: true,
-    season: "spring",
-    state: undefined,
-  },
-];
+const token = getAuthToken();
+const graphqlEndpoint = getGraphqlEndpoint();
 
 const ClosetPage = () => {
+  const [closets, setClosets] = useState([]);
+
+  useEffect(() => {
+    loadCloset().then((data) => {
+      setClosets(data);
+    });
+  }, []);
+
   return (
     <PageContent width="max-content">
-      <ClothesList clothesData={DUMMY_CLOTHES_DATA}>
-        <AddClothesItem />
-      </ClothesList>
+      <Suspense fallback={<p style={{ textAlign: "center" }}>Loading...</p>}>
+        <Await resolve={closets}>
+          {(loadedClosets) => (
+            <ClothesList clothesData={loadedClosets}>
+              <AddClothesItem />
+            </ClothesList>
+          )}
+        </Await>
+      </Suspense>
     </PageContent>
   );
 };
 
 export default ClosetPage;
 
-export const loader = () => {};
+const loadCloset = async () => {
+  const graphqlQuery = {
+    query: `
+      query MyQuery {
+        closet {
+          clothes_id
+          color
+          is_upper
+          season
+          state
+        }
+      }
+    `,
+  };
+
+  const response = await fetch(graphqlEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(graphqlQuery),
+  });
+
+  const data = await response.json();
+  return data.data.closet;
+};
+
+export function loader() {
+  return defer({
+    closet: loadCloset(),
+  });
+}

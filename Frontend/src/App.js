@@ -4,7 +4,7 @@ import classes from "./App.module.css";
 import RootPage from "./pages/Root";
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/Signup";
-import ClosetPage from "./pages/Closet";
+import ClosetPage, { loader as closetLoader } from "./pages/Closet";
 import RecommendPage from "./pages/Recommend";
 import EditClothesPage from "./pages/EditClothes";
 import NewClothesPage from "./pages/NewClothes";
@@ -23,7 +23,11 @@ const router = createBrowserRouter([
       {
         path: "clothes",
         children: [
-          { path: ":clothesId/edit", element: <EditClothesPage /> },
+          {
+            path: ":clothesId/edit",
+            element: <EditClothesPage />,
+            loader: closetLoader,
+          },
           { path: "new", element: <NewClothesPage /> },
         ],
       },
@@ -31,9 +35,11 @@ const router = createBrowserRouter([
   },
 ]);
 const App = () => {
+  test();
   return (
     <div className={classes.App}>
       <RouterProvider router={router} />
+      <test />
     </div>
   );
 };
