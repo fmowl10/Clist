@@ -3,6 +3,7 @@ import os
 import requests
 import json
 from api_helper import get_weather_by_location
+import jwt
 
 TEST_QUERY = '''query MyQuery {
   closet(where: {}) {
@@ -66,27 +67,3 @@ async def weather_test2():
 
     return { "weather": weather.name }
 
-@app.get("/json_test")
-async def json_test():
-    key = "test_key"
-
-    location = "SEOUL"
-    user_id = "c025f706-820e-11ee-b962-0242ac120002"
-
-    jwt_payload = {
-        "location": location,
-        "https://hasura.io/jwt/claims": {
-            "x-hasura-default-role": "user",
-            "x-hasura-allowed-roles": ["user", "admin"],
-            "x-hasura-user-id": user_id,
-        },
-    }
-
-    encoded = jwt.encode(
-        jwt_payload,
-        key=key,
-        algorithm="HS256",
-    )
-    decoded = jwt.decode(encoded, key=key, algorithms="HS256")
-
-    return { "payload: ": jwt_payload, "encoded": encoded, "decoded": decoded }
