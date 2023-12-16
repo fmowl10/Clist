@@ -7,7 +7,7 @@ from enum import Enum
 class EWeather(Enum):
     spring = 0
     summer = 1
-    fall = 2
+    autumn = 2
     winter = 3
 
 class Position:

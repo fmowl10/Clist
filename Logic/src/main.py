@@ -32,7 +32,7 @@ app.add_middleware(
 async def root():
     return { "msg": "logic_root" }
 
-@app.post("/recommand")
+@app.post("/recommend")
 async def recommand(request: RecommandRequest):
     key = "test_key"
     algo = "HS256"
