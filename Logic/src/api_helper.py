@@ -124,10 +124,27 @@ def get_weather_by_location(location: str) -> EWeather:
     ny = position.ny
     url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?serviceKey={serviceKey}&pageNo={pageNo}&numOfRows={numOfRows}&dataType={dataType}&base_date={baseDate}&base_time={baseTime}&nx={nx}&ny={ny}"
 
-    res = None
     try: 
         res = requests.get(url=url, timeout=3)
-    except requests.exceptions.Timeout:     # 타임아웃 발생 시, 그냥 월별로 계절을 구분해버린다. 
+        
+        # 타임아웃 발생하지 않은 경우
+        json_res = json.loads(res.text)
+
+        temperature = 0.0
+        items = json_res["response"]["body"]["items"]["item"]
+        for item in items:
+            if item["category"] == "T1H":
+                temperature = float(item["obsrValue"])
+
+        if temperature <= 0.0:  
+            return EWeather.winter
+        elif temperature <= 10:
+            return EWeather.fall
+        elif temperature <= 20:
+            return EWeather.spring
+        else:
+            return EWeather.summer
+    except:     # on whatever exceptions
         m = today.month
         if m in [3, 4, 5]:
             return EWeather.spring
@@ -137,24 +154,6 @@ def get_weather_by_location(location: str) -> EWeather:
             return EWeather.fall
         elif m in [12, 1, 2]: 
             return EWeather.winter
-
-    # 타임아웃 발생하지 않은 경우
-    json_res = json.loads(res.text)
-
-    temperature = 0.0
-    items = json_res["response"]["body"]["items"]["item"]
-    for item in items:
-        if item["category"] == "T1H":
-            temperature = float(item["obsrValue"])
-
-    if temperature <= 0.0:  
-        return EWeather.winter
-    elif temperature <= 10:
-        return EWeather.fall
-    elif temperature <= 20:
-        return EWeather.spring
-    else:
-        return EWeather.summer
 
 def get_user_closet(user_id: str, weather: EWeather):
     # print(f"user_closet: {user_id} weather: {weather.name}", end="\n")

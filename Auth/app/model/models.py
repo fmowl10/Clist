@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, UUID
 import uuid
-from .db import Base
+from app.model.db import Base
 
 
 class Users(Base):

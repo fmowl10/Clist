@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from . import models, schema
+from app.model import models, schema
 import hashlib
 
 
