@@ -5,17 +5,7 @@ import Button from "../UI/Button";
 import Logo from "../components/Logo";
 import Input from "../UI/Input";
 import Dropdown from "../UI/Dropdown";
-
-const locations = [
-  "서울",
-  "인천",
-  "경기",
-  "대전",
-  "대구",
-  "부산",
-  "울산",
-  "제주",
-];
+import locations from "../util/locations";
 
 const SignupPage = () => {
   const [inputId, setInputId] = useState("");

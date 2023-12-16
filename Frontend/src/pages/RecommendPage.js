@@ -1,35 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import PageContent from "../components/PageContent";
 import Button from "../UI/Button";
 import RecommendList from "../components/RecomendList";
-
-const DUMMY_RECOMMEND = [
-  {
-    clothes_id: 1,
-    color: "red",
-    is_upper: true,
-    season: "winter",
-    state: undefined,
-  },
-  {
-    clothes_id: 2,
-    color: "yellow",
-    is_upper: false,
-    season: "summer",
-    state: undefined,
-  },
-];
+import fetchQuery from "../util/fetchQuery";
+import fetchData from "../util/fetchData";
 
 const RecommendPage = () => {
-  const [recommend, setRecommend] = useState(DUMMY_RECOMMEND);
+  const [recommend, setRecommend] = useState([]);
 
-  const loadRecommend = () => {
-    return DUMMY_RECOMMEND;
-  };
+  useEffect(() => {
+    loadRecommend().then((newRecommendData) => {
+      setRecommend(newRecommendData);
+    });
+  }, []);
 
-  const handleRecommend = () => {
-    setRecommend(loadRecommend());
+  const handleRecommend = async () => {
+    const newRecommendData = await loadRecommend();
+    setRecommend(newRecommendData);
   };
 
   return (
@@ -41,5 +29,34 @@ const RecommendPage = () => {
 };
 
 export default RecommendPage;
+
+const loadRecommend = async () => {
+  const responseData = await fetchData("recommend");
+  const { upper_id, lower_id } = responseData;
+
+  const upper_data = await fetchQuery({
+    query: `query MyQuery {
+      closet_by_pk(clothes_id: ${upper_id}) {
+        season
+        is_upper
+        color
+        clothes_id
+      }
+    }`,
+  });
+
+  const lower_data = await fetchQuery({
+    query: `query MyQuery {
+      closet_by_pk(clothes_id: ${lower_id}) {
+        season
+        is_upper
+        color
+        clothes_id
+      }
+    }`,
+  });
+  console.log([upper_data.data.closet_by_pk, lower_data.data.closet_by_pk]);
+  return [upper_data.data.closet_by_pk, lower_data.data.closet_by_pk];
+};
 
 export const action = () => {};

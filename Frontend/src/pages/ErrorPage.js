@@ -1,5 +1,4 @@
 const ErrorPage = () => {
-  // TODO
   return <h1>ErrorPage</h1>;
 };
 
