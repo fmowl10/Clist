@@ -5,9 +5,9 @@ import hashlib
 import jwt
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from .model import crud, models, schema
-from .model.db import session_local, engine
-from .model.authclass import Result
+from app.model import crud, models, schema
+from app.model.db import session_local, engine
+from app.model.authclass import Result
 
 JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_ALOG = os.getenv("JWT_ALOG")
