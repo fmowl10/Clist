@@ -71,7 +71,7 @@ async def recommand(request: RecommandRequest):
                     matched_clothes_list.append(MatchedClothes(upper, lower))
         
         if len(matched_clothes_list) == 0:
-            return { HTTPException(status_code=404, detail="no match found") }
+            return HTTPException(status_code=404, detail="no match found")
         else:   # select random from matched list
             selected = random.choice(matched_clothes_list)
             
