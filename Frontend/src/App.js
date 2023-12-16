@@ -1,14 +1,14 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import classes from "./App.module.css";
-import RootPage from "./pages/Root";
-import LoginPage from "./pages/Login";
-import SignupPage from "./pages/Signup";
-import ClosetPage, { loader as closetLoader } from "./pages/Closet";
-import RecommendPage from "./pages/Recommend";
-import EditClothesPage from "./pages/EditClothes";
-import NewClothesPage from "./pages/NewClothes";
-import ErrorPage from "./pages/Error";
+import RootPage from "./pages/RootPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import ClosetPage, { loader as closetLoader } from "./pages/ClosetPage";
+import RecommendPage from "./pages/RecommendPage";
+import EditClothesPage from "./pages/EditClothesPage";
+import NewClothesPage from "./pages/NewClothesPage";
+import ErrorPage from "./pages/ErrorPage";
 
 const router = createBrowserRouter([
   {

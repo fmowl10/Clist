@@ -1,12 +1,9 @@
-import AddClothesItem from "./AddClothesItem";
 import ClothesItem from "./ClothesItem";
 import classes from "./ClothesList.module.css";
 
-const ClothesList = (props) => {
+const RecommendList = (props) => {
   return (
     <div className={classes["clothes-list"]}>
-      <AddClothesItem />
-      {console.log(props.clothesData)}
       {props.clothesData.map((clothesData) => (
         <ClothesItem
           id={clothesData.clothes_id}
@@ -21,4 +18,4 @@ const ClothesList = (props) => {
   );
 };
 
-export default ClothesList;
+export default RecommendList;

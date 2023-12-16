@@ -1,13 +1,12 @@
 import { Suspense, useState, useEffect } from "react";
 import { Await, defer } from "react-router-dom";
-import AddClothesItem from "../components/AddClothesItem";
 import ClothesList from "../components/ClothesList";
 import PageContent from "../components/PageContent";
-import { getAuthToken, getGraphqlEndpoint } from "../util/auth";
+import fetchQuery from "../util/fetchQuery";
 
+import { getAuthToken, getGraphqlEndpoint } from "../util/auth";
 const token = getAuthToken();
 const graphqlEndpoint = getGraphqlEndpoint();
-
 const ClosetPage = () => {
   const [closets, setClosets] = useState([]);
 
@@ -21,11 +20,7 @@ const ClosetPage = () => {
     <PageContent width="max-content">
       <Suspense fallback={<p style={{ textAlign: "center" }}>Loading...</p>}>
         <Await resolve={closets}>
-          {(loadedClosets) => (
-            <ClothesList clothesData={loadedClosets}>
-              <AddClothesItem />
-            </ClothesList>
-          )}
+          {(loadedClosets) => <ClothesList clothesData={loadedClosets} />}
         </Await>
       </Suspense>
     </PageContent>
@@ -49,16 +44,7 @@ const loadCloset = async () => {
     `,
   };
 
-  const response = await fetch(graphqlEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(graphqlQuery),
-  });
-
-  const data = await response.json();
+  const data = await fetchQuery(graphqlQuery);
   return data.data.closet;
 };
 

@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 import PageContent from "../components/PageContent";
-import ClothesList from "../components/ClothesList";
 import Button from "../UI/Button";
+import RecommendList from "../components/RecomendList";
 
 const DUMMY_RECOMMEND = [
   {
@@ -34,7 +34,7 @@ const RecommendPage = () => {
 
   return (
     <PageContent width="max-content">
-      <ClothesList clothesData={recommend} />
+      <RecommendList clothesData={recommend} />
       <Button onClick={handleRecommend}>다시 추천받기</Button>
     </PageContent>
   );

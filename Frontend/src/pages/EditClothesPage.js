@@ -1,16 +1,14 @@
 import { useState } from "react";
 
-import Button from "../UI/Button";
-import Dropdown from "../UI/Dropdown";
 import PageContent from "../components/PageContent";
-import { getAuthToken, getGraphqlEndpoint } from "../util/auth";
-import { useNavigate } from "react-router-dom";
+import Dropdown from "../UI/Dropdown";
+import Button from "../UI/Button";
+import { useNavigate, useParams } from "react-router-dom";
 import korToEng from "../util/korToEng";
+import fetchQuery from "../util/fetchQuery";
 
-const token = getAuthToken();
-const graphqlEndpoint = getGraphqlEndpoint();
-
-const NewClothesPage = () => {
+const EditClothesPage = () => {
+  const { clothesId } = useParams();
   const navigate = useNavigate();
 
   const [selectedIsUpper, setSelectedIsUpper] = useState("");
@@ -29,44 +27,56 @@ const NewClothesPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("add", selectedColor, selectedSeason, selectedIsUpper);
+    console.log("edit", selectedColor, selectedSeason, selectedIsUpper);
+
+    const graphqlQuery = {
+      query: `mutation UpdateCloset {
+        update_closet(where: {
+          clothes_id: {_eq: ${clothesId}}}, 
+          _set: {
+            color: "${korToEng[selectedColor]}", 
+            is_upper: ${korToEng[selectedIsUpper]}, 
+            season: "${korToEng[selectedSeason]}"}) {
+          returning {
+            color
+            is_upper
+            season
+          }
+        }
+      }
+      
+      `,
+    };
+    const data = fetchQuery(graphqlQuery);
+    console.log(data);
+
+    navigate("/closet");
+  };
+
+  const handleDelete = async () => {
+    console.log("delete");
 
     const graphqlQuery = {
       query: `
       mutation MyMutation {
-        insert_closet(
-          objects: {
-            color: "${korToEng[selectedColor]}",
-            is_upper: ${korToEng[selectedIsUpper]},
-            season: "${korToEng[selectedSeason]}",
-            state: true
-          }
-        ) {
-          affected_rows
-        }
+      delete_closet_by_pk(clothes_id: ${clothesId}) {
+        state
       }
-      
+    }
     `,
     };
-    console.log(graphqlQuery);
-    const response = await fetch(graphqlEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(graphqlQuery),
-    });
+    console.log(clothesId);
 
-    const data = await response.json();
+    const data = fetchQuery(graphqlQuery);
     console.log(data);
+
     navigate("/closet");
   };
 
   return (
     <PageContent>
       <form onSubmit={handleSubmit}>
-        <h1>옷 추가하기</h1>
+        <h1>옷 수정하기</h1>
         <Dropdown items={["상의", "하의"]} onChange={handleIsUpperChange}>
           종류 선택
         </Dropdown>
@@ -86,12 +96,13 @@ const NewClothesPage = () => {
         >
           계절 선택
         </Dropdown>
+        <Button color="red" type="button" onClick={handleDelete}>
+          옷 삭제하기
+        </Button>
         <Button type="submit">확인</Button>
       </form>
     </PageContent>
   );
 };
 
-export default NewClothesPage;
-
-export const action = () => {};
+export default EditClothesPage;
