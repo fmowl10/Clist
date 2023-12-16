@@ -10,7 +10,7 @@ from app.model.db import session_local, engine
 from app.model.authclass import Result
 
 JWT_SECRET = os.getenv("JWT_SECRET")
-JWT_ALOG = os.getenv("JWT_ALOG")
+JWT_ALOG = os.getenv("JWT_ALGO")
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -41,14 +41,14 @@ def sign_in(user: schema.UserBase, db: Session = Depends(get_db)):
     if user_row is None:
         return Result("user not exist")
     hasher = hashlib.sha256()
-    hasher.update(user.password)
+    hasher.update(user.password.encode("utf-8"))
     hashed_password = hasher.hexdigest()
     if hashed_password != user_row.password:
         return Result("password not matched")
 
     print(user_row.id)
 
-    token: str = issue_jwt(user_id=user_row.id, location=user_row.location)
+    token: str = issue_jwt(user_id=str(user_row.id), location=user_row.location)
     return Result("ok", token=token)
 
 
@@ -81,6 +81,9 @@ def issue_jwt(user_id: str, location: str) -> str:
     Returns:
         str: issued jwt
     """
+
+    print(JWT_ALOG)
+    print(JWT_SECRET)
 
     return jwt.encode(
         {
