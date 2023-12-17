@@ -15,6 +15,14 @@ const korToEng = {
   "봄/가을": "autumn",
   여름: "summer",
   겨울: "winter",
+  서울: "seoul",
+  인천: "incheon",
+  경기: "gyeonggi-do",
+  대전: "daejeon",
+  대구: "daegu",
+  부산: "busan",
+  울산: "ulsan",
+  제주: "jeju",
   "-": "-",
 };
 

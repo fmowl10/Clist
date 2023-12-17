@@ -5,6 +5,7 @@ import Button from "../UI/Button";
 import RecommendList from "../components/RecomendList";
 import fetchQuery from "../util/fetchQuery";
 import fetchData from "../util/fetchData";
+import { getLogicServerEndpoint } from "../util/auth";
 
 const RecommendPage = () => {
   const [recommend, setRecommend] = useState([]);
@@ -31,7 +32,8 @@ const RecommendPage = () => {
 export default RecommendPage;
 
 const loadRecommend = async () => {
-  const responseData = await fetchData("recommend");
+  const path = getLogicServerEndpoint();
+  const responseData = await fetchData(path + "recommend");
   const { upper_id, lower_id } = responseData;
 
   const upper_data = await fetchQuery({

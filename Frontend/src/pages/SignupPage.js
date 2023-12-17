@@ -7,12 +7,15 @@ import Input from "../UI/Input";
 import Dropdown from "../UI/Dropdown";
 import locations from "../util/locations";
 import fetchData from "../util/fetchData";
-import { getAuthToken } from "../util/auth";
+import { getAuthServerEndpoint, getAuthToken } from "../util/auth";
+import { useNavigate } from "react-router-dom";
+import korToEng from "../util/korToEng";
 
 const SignupPage = () => {
   const [inputId, setInputId] = useState("");
   const [inputPw, setInputPw] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
+  const navigate = useNavigate();
 
   const handleIdInputChange = (e) => {
     setInputId(e.target.value);
@@ -27,31 +30,19 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = getAuthToken();
-    try {
-      const response = await fetch(`http://127.0.0.1:8080/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          user_id: inputId,
-          password: inputPw,
-          location: selectedLocation,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      var responseData = await response.json();
-      console.log(responseData);
-    } catch (error) {
-      console.error("error:", error);
+    const path = getAuthServerEndpoint();
+    const responseData = await fetchData(path + "signup", {
+      user_id: inputId,
+      password: inputPw,
+      location: korToEng[selectedLocation],
+    });
+    if (responseData.msg == "ok") {
+      alert("가입에 성공하였습니다.");
+      navigate("/login");
     }
-
-    console.log(inputId, inputPw, selectedLocation);
+    if (responseData.msg == "user exist") {
+      alert("이미 존재하는 아이디입니다.");
+    }
   };
 
   return (

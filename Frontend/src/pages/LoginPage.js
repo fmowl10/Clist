@@ -5,6 +5,7 @@ import Logo from "../components/Logo";
 import Button from "../UI/Button";
 import Input from "../UI/Input";
 import fetchData from "../util/fetchData";
+import { getAuthServerEndpoint } from "../util/auth";
 
 const LoginPage = () => {
   const [inputId, setInputId] = useState("");
@@ -17,8 +18,14 @@ const LoginPage = () => {
     setInputPw(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const path = getAuthServerEndpoint();
+    const responseData = await fetchData(path + "signin", {
+      user_id: inputId,
+      password: inputPw,
+    });
+    console.log(responseData);
     console.log(inputId, inputPw);
   };
 
