@@ -4,6 +4,7 @@ import os
 import hashlib
 import jwt
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from app.model import crud, models, schema
 from app.model.db import session_local, engine
@@ -15,7 +16,13 @@ JWT_ALOG = os.getenv("JWT_ALGO")
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 모든 출처 허용, 특정 도메인 지정 가능
+    allow_credentials=True,
+    allow_methods=["*"],  # 모든 HTTP 메소드 허용
+    allow_headers=["*"],  # 모든 헤더 허용
+)
 
 def get_db():
     db = None
