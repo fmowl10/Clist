@@ -6,7 +6,14 @@ import jwt
 from data_model import RecommandRequest
 from fastapi import FastAPI, HTTPException
 from jwt.exceptions import InvalidTokenError
-from api_helper import get_weather_by_location, get_user_closet, g_color_match_map, UpperCloth, LowerCloth, MatchedClothes
+from api_helper import (
+    get_weather_by_location,
+    get_user_closet,
+    g_color_match_map,
+    UpperCloth,
+    LowerCloth,
+    MatchedClothes,
+)
 from typing import List
 import random
 from starlette.middleware.cors import CORSMiddleware
@@ -16,9 +23,8 @@ JWT_ALOG = os.getenv("JWT_ALOG")
 
 app = FastAPI()
 
-origins = [
-    "*"
-]
+
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,18 +34,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 async def root():
-    return { "msg": "logic_root" }
+    return {"msg": "logic_root"}
 
-@app.post("/recommend")
+
+@app.post("/logic/recommend")
 async def recommand(request: RecommandRequest):
     key = "test_key"
     algo = "HS256"
     if False:
         key = JWT_SECRET
         algo = JWT_ALOG
-
 
     try:
         decoded = jwt.decode(request.token, key=key, algorithms=algo)
@@ -52,10 +59,10 @@ async def recommand(request: RecommandRequest):
         print("weather:" + weather.name, end="\n")
         closet = get_user_closet(user_id, weather)
 
-        upper_clothes : List[UpperCloth] = []
-        lower_clothes : List[LowerCloth] = []
+        upper_clothes: List[UpperCloth] = []
+        lower_clothes: List[LowerCloth] = []
 
-        for cloth in closet: 
+        for cloth in closet:
             if cloth["is_upper"]:
                 upper = UpperCloth(cloth["clothes_id"], cloth["color"])
                 upper_clothes.append(upper)
@@ -63,27 +70,28 @@ async def recommand(request: RecommandRequest):
                 lower = LowerCloth(cloth["clothes_id"], cloth["color"])
                 lower_clothes.append(lower)
 
-        matched_clothes_list : List[MatchedClothes] = []
+        matched_clothes_list: List[MatchedClothes] = []
         for upper in upper_clothes:
             lower_map = g_color_match_map[upper.color]
             for lower in lower_clothes:
                 if lower.color in lower_map:
                     matched_clothes_list.append(MatchedClothes(upper, lower))
-        
+
         if len(matched_clothes_list) == 0:
             return HTTPException(status_code=404, detail="no match found")
-        else:   # select random from matched list
+        else:  # select random from matched list
             selected = random.choice(matched_clothes_list)
-            
-            return { "upper_id": selected.upper.id, "lower_id":selected.lower.id }
 
-    except InvalidTokenError: 
+            return {"upper_id": selected.upper.id, "lower_id": selected.lower.id}
+
+    except InvalidTokenError:
         raise HTTPException(status_code=400, detail="Invalid Token")
     except KeyError as e:
         raise HTTPException(status_code=400, detail=f"Invalid Key: {e}")
     except Exception as e:
         print(e)
         raise HTTPException(status_code=400, detail=f"Exception: {e}")
+
 
 @app.get("/json_test")
 async def json_test():
@@ -108,4 +116,4 @@ async def json_test():
     )
     decoded = jwt.decode(encoded, key=key, algorithms="HS256")
 
-    return { "payload: ": jwt_payload, "encoded": encoded, "decoded": decoded }
+    return {"payload: ": jwt_payload, "encoded": encoded, "decoded": decoded}
