@@ -17,10 +17,10 @@ const ClothesList = (props) => {
 
     setFilteredItems(
       props.clothesData.filter((data) => {
-        if (filter == "-") return true;
-        else if (category === "색깔") return data.color == korToEng[filter];
-        else if (category === "계절") return data.season == filter;
-        else if (category === "종류") return data.is_upper == filter;
+        if (filter === "-") return true;
+        else if (category === "색깔") return data.color === korToEng[filter];
+        else if (category === "계절") return data.season === filter;
+        else if (category === "종류") return data.is_upper === filter;
         else return true;
       })
     );
@@ -31,7 +31,7 @@ const ClothesList = (props) => {
       <ClothesFilter setCategory={setCategory} setFilter={setFilter} />
 
       <div className={classes.container}>
-        {filter == "-" ? <AddClothesItem /> : ""}
+        {filter === "-" ? <AddClothesItem /> : ""}
         {filteredItems.map((clothesData) => (
           <ClothesItem
             id={clothesData.clothes_id}

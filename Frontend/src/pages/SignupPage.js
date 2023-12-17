@@ -7,7 +7,7 @@ import Input from "../UI/Input";
 import Dropdown from "../UI/Dropdown";
 import locations from "../util/locations";
 import fetchData from "../util/fetchData";
-import { getAuthServerEndpoint, getAuthToken } from "../util/auth";
+import { getAuthServerEndpoint } from "../util/auth";
 import { useNavigate } from "react-router-dom";
 import korToEng from "../util/korToEng";
 
@@ -36,11 +36,11 @@ const SignupPage = () => {
       password: inputPw,
       location: korToEng[selectedLocation],
     });
-    if (responseData.msg == "ok") {
+    if (responseData.msg === "ok") {
       alert("가입에 성공하였습니다.");
       navigate("/login");
     }
-    if (responseData.msg == "user exist") {
+    if (responseData.msg === "user exist") {
       alert("이미 존재하는 아이디입니다.");
     }
   };

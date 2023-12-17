@@ -29,8 +29,6 @@ const LoginPage = () => {
     console.log(inputId, inputPw);
   };
 
-  // fetchData();
-
   return (
     <PageContent>
       <Logo />
