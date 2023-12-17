@@ -15,6 +15,7 @@ const korToEng = {
   "봄/가을": "autumn",
   여름: "summer",
   겨울: "winter",
+  "-": "-",
 };
 
 export default korToEng;

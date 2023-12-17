@@ -6,6 +6,8 @@ import Logo from "../components/Logo";
 import Input from "../UI/Input";
 import Dropdown from "../UI/Dropdown";
 import locations from "../util/locations";
+import fetchData from "../util/fetchData";
+import { getAuthToken } from "../util/auth";
 
 const SignupPage = () => {
   const [inputId, setInputId] = useState("");
@@ -23,8 +25,32 @@ const SignupPage = () => {
     setSelectedLocation(item);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = getAuthToken();
+    try {
+      const response = await fetch(`http://127.0.0.1:8080/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          user_id: inputId,
+          password: inputPw,
+          location: selectedLocation,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      var responseData = await response.json();
+      console.log(responseData);
+    } catch (error) {
+      console.error("error:", error);
+    }
+
     console.log(inputId, inputPw, selectedLocation);
   };
 

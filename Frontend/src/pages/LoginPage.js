@@ -4,6 +4,7 @@ import PageContent from "../components/PageContent";
 import Logo from "../components/Logo";
 import Button from "../UI/Button";
 import Input from "../UI/Input";
+import fetchData from "../util/fetchData";
 
 const LoginPage = () => {
   const [inputId, setInputId] = useState("");
@@ -20,6 +21,8 @@ const LoginPage = () => {
     e.preventDefault();
     console.log(inputId, inputPw);
   };
+
+  // fetchData();
 
   return (
     <PageContent>

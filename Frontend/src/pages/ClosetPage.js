@@ -4,9 +4,6 @@ import ClothesList from "../components/ClothesList";
 import PageContent from "../components/PageContent";
 import fetchQuery from "../util/fetchQuery";
 
-import { getAuthToken, getGraphqlEndpoint } from "../util/auth";
-const token = getAuthToken();
-const graphqlEndpoint = getGraphqlEndpoint();
 const ClosetPage = () => {
   const [closets, setClosets] = useState([]);
 
