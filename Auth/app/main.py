@@ -26,7 +26,7 @@ def get_db():
         db.close()
 
 
-@app.post("/signin")
+@app.post("/auth/signin")
 def sign_in(user: schema.UserBase, db: Session = Depends(get_db)):
     """handler for signin
     if user_id and password(hashed) is match then return jwt and 200
@@ -52,7 +52,7 @@ def sign_in(user: schema.UserBase, db: Session = Depends(get_db)):
     return Result("ok", token=token)
 
 
-@app.post("/signup")
+@app.post("/auth/signup")
 def sign_up(user: schema.UserCreate, db: Session = Depends(get_db)):
     """handler sign up
 
