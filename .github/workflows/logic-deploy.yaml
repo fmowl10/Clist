@@ -25,7 +25,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: built-artifact
-          path: Auth/${{ github.sha }}.zip
+          path: Logic/${{ github.sha }}.zip
 
   publish:
     runs-on: ubuntu-latest
